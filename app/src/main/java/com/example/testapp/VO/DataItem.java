@@ -13,6 +13,13 @@ public class DataItem
         this.price = price;
     }
 
+    public DataItem(String name, String price)
+    {
+        isCheck = false;
+        this.name = name;
+        this.price = price;
+    }
+
     public boolean isCheck()
     {
         return isCheck;
