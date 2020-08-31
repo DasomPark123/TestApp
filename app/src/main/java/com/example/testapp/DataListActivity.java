@@ -1,6 +1,8 @@
 package com.example.testapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,16 +20,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.testapp.VO.DataItem;
 import com.example.testapp.adapters.DataListAdapter;
 import com.example.testapp.dialogs.AddDataDialog;
-import com.example.testapp.dialogs.SaveDataDialog;
+import com.example.testapp.utils.PreferenceUtil;
 import com.example.testapp.utils.Utils;
 
 import java.util.ArrayList;
 
 public class DataListActivity extends AppCompatActivity
 {
+    private final String TAG = getClass().getSimpleName();
+
     private final int REQUEST_ADD = 0x1001;
     private final int REQUEST_SAVE = 0x1002;
 
+    private PreferenceUtil pref;
     private RecyclerView recyclerView;
     private DataListAdapter adapter;
 
@@ -35,6 +40,8 @@ public class DataListActivity extends AppCompatActivity
 
     private String name;
     private String price;
+
+    private String[] saveItems;
 
     private ArrayList<DataItem> dataList = new ArrayList<>();
 
@@ -45,7 +52,6 @@ public class DataListActivity extends AppCompatActivity
         setContentView(R.layout.activity_data_list);
 
         initView();
-
     }
 
     private void initView()
@@ -53,6 +59,8 @@ public class DataListActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.data_list);
+
+        pref = new PreferenceUtil(getApplicationContext());
 
         recyclerView = findViewById(R.id.rv_data_list);
         adapter = new DataListAdapter(dataList);
@@ -62,6 +70,8 @@ public class DataListActivity extends AppCompatActivity
 
         btnDelete = findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(onClickListener);
+
+        saveItems = getResources().getStringArray(R.array.save_type_array);
 
         addTestData();
     }
@@ -90,8 +100,7 @@ public class DataListActivity extends AppCompatActivity
     {
         if(item.getItemId() == R.id.action_save)
         {
-            Intent intent = new Intent(this, SaveDataDialog.class);
-            startActivityForResult(intent,REQUEST_SAVE);
+            showSaveDataDialog();
         }
         else if(item.getItemId() == R.id.action_add)
         {
@@ -125,7 +134,38 @@ public class DataListActivity extends AppCompatActivity
             dataList.add(new DataItem(name,price));
             adapter.notifyItemChanged(dataList.size()-1);
         }
+        else if(requestCode == REQUEST_SAVE && resultCode == Activity.RESULT_OK)
+        {
+
+            //Log.d(TAG,"Checked Radio Button : " )
+        }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showSaveDataDialog()
+    {
+       // final int[] checkedItem = {0};
+        AlertDialog.Builder dialog = new AlertDialog.Builder(DataListActivity.this,R.style.NoTitleDialog);
+        dialog.setTitle(R.string.save_data)
+                .setSingleChoiceItems(saveItems, 0, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                       // checkedItem[0] = i;
+                    }
+                })
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        pref.putStringPreference(PreferenceUtil.KEY_SAVE_DATA_TYPE,saveItems[i]);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create().show();
+
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener()
@@ -135,7 +175,6 @@ public class DataListActivity extends AppCompatActivity
         {
             if(view.getId() == R.id.btn_delete)
             {
-
                     for(int i = dataList.size() -1; i >= 0; i--)
                     {
                         if(dataList.get(i).isCheck())

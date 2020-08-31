@@ -18,12 +18,10 @@ import java.util.ArrayList;
 
 public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataListViewHolder>
 {
-    private Context context;
     private ArrayList<DataItem> itemList;
 
     public DataListAdapter(ArrayList<DataItem> itemList)
     {
-        //this.context = context;
         this.itemList = itemList;
     }
 
@@ -31,9 +29,6 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataLi
     @Override
     public DataListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        context = parent.getContext();
-
-        LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item,parent,false);
         DataListViewHolder viewHolder = new DataListViewHolder(view);
 
@@ -70,7 +65,6 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataLi
             tvPrice = itemView.findViewById(R.id.tv_price);
 
             checkBox.setOnClickListener(onClickListener);
-
         }
 
         private View.OnClickListener onClickListener = new View.OnClickListener()
@@ -97,11 +91,9 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataLi
                             Log.d("ViewHolder",itemList.get(position).isCheck() ?
                                     "checkbox : true" : "checkbox : false");
                         }
-
                     }
                 }
             }
         };
     }
-
 }

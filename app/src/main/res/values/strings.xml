@@ -25,4 +25,10 @@
     <string name="shared_preference">Shared Preference</string>
     <string name="sql_lite">SQL Lite</string>
 
+    <string-array name="save_type_array">
+        <item>@string/internal_storage</item>
+        <item>@string/external_storage</item>
+        <item>@string/shared_preference</item>
+        <item>@string/sql_lite</item>
+    </string-array>
 </resources>
