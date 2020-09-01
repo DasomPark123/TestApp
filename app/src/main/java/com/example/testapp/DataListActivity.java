@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.testapp.VO.DataItem;
 import com.example.testapp.adapters.DataListAdapter;
 import com.example.testapp.dialogs.AddDataDialog;
+import com.example.testapp.dialogs.RadioGroupDialog;
 import com.example.testapp.utils.PreferenceUtil;
 import com.example.testapp.utils.Utils;
 
@@ -31,6 +33,11 @@ public class DataListActivity extends AppCompatActivity
 
     private final int REQUEST_ADD = 0x1001;
     private final int REQUEST_SAVE = 0x1002;
+
+    private final int INTERNAL_STORAGE = 0;
+    private final int EXTERNAL_STORAGE = 1;
+    private final int SHARED_PREFERENCE = 2;
+    private final int SQL_LITE = 3;
 
     private PreferenceUtil pref;
     private RecyclerView recyclerView;
@@ -44,6 +51,8 @@ public class DataListActivity extends AppCompatActivity
     private String[] saveItems;
 
     private ArrayList<DataItem> dataList = new ArrayList<>();
+
+    private int saveType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -100,7 +109,7 @@ public class DataListActivity extends AppCompatActivity
     {
         if(item.getItemId() == R.id.action_save)
         {
-            showSaveDataDialog();
+            showSaveDataDialog(R.string.save_data,R.array.save_type_array,saveType);
         }
         else if(item.getItemId() == R.id.action_add)
         {
@@ -136,36 +145,41 @@ public class DataListActivity extends AppCompatActivity
         }
         else if(requestCode == REQUEST_SAVE && resultCode == Activity.RESULT_OK)
         {
-
-            //Log.d(TAG,"Checked Radio Button : " )
+            Intent intent = new Intent();
+            int result = intent.getIntExtra(Utils.EXTRA_INT_VALUE,0);
+            saveData(result);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void showSaveDataDialog()
+    private void saveData(int saveType)
     {
-       // final int[] checkedItem = {0};
-        AlertDialog.Builder dialog = new AlertDialog.Builder(DataListActivity.this,R.style.NoTitleDialog);
-        dialog.setTitle(R.string.save_data)
-                .setSingleChoiceItems(saveItems, 0, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                       // checkedItem[0] = i;
-                    }
-                })
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        pref.putStringPreference(PreferenceUtil.KEY_SAVE_DATA_TYPE,saveItems[i]);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .create().show();
+        if(saveType == INTERNAL_STORAGE)
+        {
 
+        }
+        else if(saveType == EXTERNAL_STORAGE)
+        {
+
+        }
+        else if(saveType == SHARED_PREFERENCE)
+        {
+
+        }
+        else if(saveType == SQL_LITE)
+        {
+
+        }
+    }
+
+    private void showSaveDataDialog(int title, int itemList,  int selectedItem)
+    {
+        Intent intent = new Intent(DataListActivity.this, RadioGroupDialog.class);
+        String[] items  = getResources().getStringArray(itemList);
+        intent.putExtra(Utils.EXTRA_TITLE,getString(title));
+        intent.putExtra(Utils.EXTRA_STRING_ARRAY_VALUE,items);
+        intent.putExtra(Utils.EXTRA_INT_VALUE,selectedItem);
+        startActivityForResult(intent,REQUEST_SAVE);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener()

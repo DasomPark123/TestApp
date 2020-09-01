@@ -32,19 +32,42 @@ public class RadioGroupDialog extends AppCompatActivity
 
         pref = new PreferenceUtil(getApplicationContext());
 
+        tvTitle = findViewById(R.id.tv_title);
+        radioGroup = findViewById(R.id.radio_group);
+
+        findViewById(R.id.tv_cancel).setOnClickListener(onClickListener);
+        findViewById(R.id.tv_ok).setOnClickListener(onClickListener);
+
         init();
     }
 
     private void init()
     {
         Intent intent = getIntent();
-        String title = intent.getStringExtra()
-        tvTitle = findViewById(R.id.tv_title);
-        radioGroup = findViewById(R.id.radio_group);
+        String title = intent.getStringExtra(Utils.EXTRA_TITLE);
+        tvTitle.setText(title);
 
-        int selectedItem = pref.getIntPreference(PreferenceUtil.KEY_RADIO_DIALOG_VALUE,0);
-        for(int i = 0; i < )
+        int selectedItem = pref.getIntPreference(Utils.EXTRA_INT_VALUE,0);
+        String[] itemList = intent.getStringArrayExtra(Utils.EXTRA_STRING_ARRAY_VALUE);
+        for(int i = 0; i < itemList.length; i++ )
+        {
+            RadioButton radioButton = new RadioButton(getApplicationContext());
+            radioButton.setText(itemList[i]);
+            radioButton.setTextColor(getResources().getColor(R.color.colorWhite));
+            radioButton.setButtonTintList(getResources().getColorStateList(R.color.colorWhite));
+            radioButton.setId(i);
+            if(i == selectedItem)
+            {
+                radioButton.setChecked(true);
+            }
+            radioGroup.addView(radioButton);
+        }
+    }
 
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener()
@@ -52,7 +75,18 @@ public class RadioGroupDialog extends AppCompatActivity
         @Override
         public void onClick(View view)
         {
-
+            if(view.getId() ==  R.id.tv_cancel)
+            {
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+            }
+            else if(view.getId() == R.id.tv_ok)
+            {
+                Intent intent = new Intent();
+                intent.putExtra(Utils.EXTRA_INT_VALUE,radioGroup.getCheckedRadioButtonId());
+                setResult(Activity.RESULT_OK,intent);
+                finish();
+            }
         }
     };
 }

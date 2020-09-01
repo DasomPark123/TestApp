@@ -10,4 +10,7 @@ public class Utils
     public static final String EXTRA_EXTERNAL_STORAGE = "com.example.testapp.EXTRA_EXTERNAL_STORAGE";
     public static final String EXTRA_SHARED_PREFERENCE = "com.example.testapp.EXTRA_SHARED_PREFERENCE";
     public static final String EXTRA_SQL_LITE = "com.example.testapp.EXTRA_SQL_LITE";
+
+    public static final String EXTRA_STRING_ARRAY_VALUE = "com.example.testapp.EXTRA_STRING_ARRAY_VALUE";
+    public static final String EXTRA_INT_VALUE = "com.example.testapp.EXTRA_INT_VALUE";
 }
