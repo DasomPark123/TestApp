@@ -24,11 +24,16 @@
     <string name="external_storage">External Storage</string>
     <string name="shared_preference">Shared Preference</string>
     <string name="sql_lite">SQL Lite</string>
+    <string name="room">Room</string>
+
+    <string name="hint">Hint</string>
+    <string name="please_wait">Please wait…</string>
 
     <string-array name="save_type_array">
         <item>@string/internal_storage</item>
         <item>@string/external_storage</item>
         <item>@string/shared_preference</item>
         <item>@string/sql_lite</item>
+        <item>@string/room</item>
     </string-array>
 </resources>

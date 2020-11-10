@@ -38,6 +38,7 @@ public class DataListActivity extends AppCompatActivity
     private final int EXTERNAL_STORAGE = 1;
     private final int SHARED_PREFERENCE = 2;
     private final int SQL_LITE = 3;
+    private final int ROOM = 4;
 
     private PreferenceUtil pref;
     private RecyclerView recyclerView;
@@ -170,6 +171,15 @@ public class DataListActivity extends AppCompatActivity
         {
 
         }
+        else if(saveType == ROOM)
+        {
+
+        }
+    }
+
+    private void saveViaRoom()
+    {
+
     }
 
     private void showSaveDataDialog(int title, int itemList,  int selectedItem)

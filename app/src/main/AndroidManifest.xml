@@ -9,20 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".BaseActivity"></activity>
         <activity
             android:name=".dialogs.RadioGroupDialog"
-            android:theme="@style/NoTitleDialog"/>
+            android:theme="@style/NoTitleDialog" />
         <activity
             android:name=".dialogs.AddDataDialog"
             android:theme="@style/NoTitleDialog" />
         <activity android:name=".DataListActivity">
+
+        </activity>
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
         <activity android:name=".ApplistActivity" />
         <activity android:name=".CompassActivity" />
         <activity android:name=".SensorActivity" />
