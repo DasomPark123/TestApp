@@ -1,6 +1,5 @@
 package com.example.testapp.adapters;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testapp.R;
-import com.example.testapp.VO.DataItem;
+import com.example.testapp.VO.Fruits;
 
 import java.util.ArrayList;
 
 public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataListViewHolder>
 {
-    private ArrayList<DataItem> itemList;
+    private ArrayList<Fruits> itemList;
 
-    public DataListAdapter(ArrayList<DataItem> itemList)
+    public DataListAdapter(ArrayList<Fruits> itemList)
     {
         this.itemList = itemList;
     }
@@ -38,10 +37,10 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataLi
     @Override
     public void onBindViewHolder(@NonNull DataListViewHolder holder, int position)
     {
-        DataItem dataItem = itemList.get(position);
-        holder.checkBox.setChecked(dataItem.isCheck());
-        holder.tvName.setText(dataItem.getName());
-        holder.tvPrice.setText(dataItem.getPrice());
+        Fruits fruits = itemList.get(position);
+        holder.checkBox.setChecked(fruits.isCheck());
+        holder.tvName.setText(fruits.getName());
+        holder.tvPrice.setText(fruits.getPrice());
     }
 
     @Override

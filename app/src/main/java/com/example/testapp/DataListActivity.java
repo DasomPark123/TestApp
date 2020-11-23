@@ -1,24 +1,20 @@
 package com.example.testapp;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.testapp.VO.DataItem;
+import com.example.testapp.VO.Fruits;
 import com.example.testapp.adapters.DataListAdapter;
 import com.example.testapp.dialogs.AddDataDialog;
 import com.example.testapp.dialogs.RadioGroupDialog;
@@ -27,7 +23,7 @@ import com.example.testapp.utils.Utils;
 
 import java.util.ArrayList;
 
-public class DataListActivity extends AppCompatActivity
+public class DataListActivity extends BaseActivity
 {
     private final String TAG = getClass().getSimpleName();
 
@@ -51,7 +47,7 @@ public class DataListActivity extends AppCompatActivity
 
     private String[] saveItems;
 
-    private ArrayList<DataItem> dataList = new ArrayList<>();
+    private ArrayList<Fruits> dataList = new ArrayList<>();
 
     private int saveType = 0;
 
@@ -88,12 +84,12 @@ public class DataListActivity extends AppCompatActivity
 
     private void addTestData()
     {
-        dataList.add(new DataItem("apple","1000"));
-        dataList.add(new DataItem("banana","2000"));
-        dataList.add(new DataItem("strawberry","3000"));
-        dataList.add(new DataItem("pear","4000"));
-        dataList.add(new DataItem("grape","500"));
-        dataList.add(new DataItem("grapefruit","100"));
+        dataList.add(new Fruits("apple","1000"));
+        dataList.add(new Fruits("banana","2000"));
+        dataList.add(new Fruits("strawberry","3000"));
+        dataList.add(new Fruits("pear","4000"));
+        dataList.add(new Fruits("grape","500"));
+        dataList.add(new Fruits("grapefruit","100"));
 
         adapter.notifyDataSetChanged();
     }
@@ -141,7 +137,7 @@ public class DataListActivity extends AppCompatActivity
         {
             name = data.getStringExtra(Utils.EXTRA_NAME_VALUE);
             price = data.getStringExtra(Utils.EXTRA_PRICE_VALUE);
-            dataList.add(new DataItem(name,price));
+            dataList.add(new Fruits(name,price));
             adapter.notifyItemChanged(dataList.size()-1);
         }
         else if(requestCode == REQUEST_SAVE && resultCode == Activity.RESULT_OK)
@@ -173,7 +169,7 @@ public class DataListActivity extends AppCompatActivity
         }
         else if(saveType == ROOM)
         {
-
+            saveViaRoom();
         }
     }
 

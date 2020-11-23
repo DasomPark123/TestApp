@@ -1,19 +1,34 @@
 package com.example.testapp.VO;
 
-public class DataItem
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "fruits_table")
+public class Fruits
 {
+    @Ignore
     boolean isCheck;
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "name")
     String name;
+
+    @NonNull
+    @ColumnInfo(name = "price")
     String price;
 
-    public DataItem(boolean isCheck, String name, String price)
+    public Fruits(boolean isCheck, String name, String price)
     {
         this.isCheck = isCheck;
         this.name = name;
         this.price = price;
     }
 
-    public DataItem(String name, String price)
+    public Fruits(String name, String price)
     {
         isCheck = false;
         this.name = name;
