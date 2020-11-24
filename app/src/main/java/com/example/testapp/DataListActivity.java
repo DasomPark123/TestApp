@@ -3,6 +3,7 @@ package com.example.testapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,8 +23,10 @@ import com.example.testapp.dialogs.AddDataDialog;
 import com.example.testapp.dialogs.RadioGroupDialog;
 import com.example.testapp.utils.PreferenceUtil;
 import com.example.testapp.utils.Utils;
+import com.example.testapp.viewmodel.FruitsViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataListActivity extends BaseActivity
 {
@@ -51,6 +56,8 @@ public class DataListActivity extends BaseActivity
 
     private int saveType = 0;
 
+    private FruitsViewModel mFruitsViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -79,17 +86,20 @@ public class DataListActivity extends BaseActivity
 
         saveItems = getResources().getStringArray(R.array.save_type_array);
 
-        addTestData();
+        mFruitsViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(FruitsViewModel.class);
+        mFruitsViewModel.getAllFruits().observe(this, mObserver);
+
+        //addTestData();
     }
 
     private void addTestData()
     {
-        dataList.add(new Fruits("apple","1000"));
-        dataList.add(new Fruits("banana","2000"));
-        dataList.add(new Fruits("strawberry","3000"));
-        dataList.add(new Fruits("pear","4000"));
-        dataList.add(new Fruits("grape","500"));
-        dataList.add(new Fruits("grapefruit","100"));
+        dataList.add(new Fruits("apple", "1000"));
+        dataList.add(new Fruits("banana", "2000"));
+        dataList.add(new Fruits("strawberry", "3000"));
+        dataList.add(new Fruits("pear", "4000"));
+        dataList.add(new Fruits("grape", "500"));
+        dataList.add(new Fruits("grapefruit", "100"));
 
         adapter.notifyDataSetChanged();
     }
@@ -97,7 +107,7 @@ public class DataListActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.toolbar,menu);
+        getMenuInflater().inflate(R.menu.toolbar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -106,17 +116,18 @@ public class DataListActivity extends BaseActivity
     {
         if(item.getItemId() == R.id.action_save)
         {
-            showSaveDataDialog(R.string.save_data,R.array.save_type_array,saveType);
+            showSaveDataDialog(R.string.save_data, R.array.save_type_array, saveType);
         }
         else if(item.getItemId() == R.id.action_add)
         {
             Intent intent = new Intent(this, AddDataDialog.class);
-            intent.putExtra(Utils.EXTRA_TITLE,getString(R.string.add_data));
-            startActivityForResult(intent,REQUEST_ADD);
+            intent.putExtra(Utils.EXTRA_TITLE, getString(R.string.add_data));
+            startActivityForResult(intent, REQUEST_ADD);
         }
         else if(item.getItemId() == R.id.action_delete)
         {
             btnDelete.setVisibility(View.VISIBLE);
+            adapter.setCheckboxVisibility(true);
         }
         else if(item.getItemId() == R.id.action_select_all)
         {
@@ -133,17 +144,26 @@ public class DataListActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
-        if(requestCode == REQUEST_ADD && resultCode == Activity.RESULT_OK)
+        if(requestCode == REQUEST_ADD)
         {
-            name = data.getStringExtra(Utils.EXTRA_NAME_VALUE);
-            price = data.getStringExtra(Utils.EXTRA_PRICE_VALUE);
-            dataList.add(new Fruits(name,price));
-            adapter.notifyItemChanged(dataList.size()-1);
+//            name = data.getStringExtra(Utils.EXTRA_NAME_VALUE);
+//            price = data.getStringExtra(Utils.EXTRA_PRICE_VALUE);
+//            dataList.add(new Fruits(name, price));
+//            adapter.notifyItemChanged(dataList.size() - 1);
+            if(resultCode == Activity.RESULT_OK)
+            {
+                Fruits fruits = new Fruits(data.getStringExtra(Utils.EXTRA_NAME_VALUE), data.getStringExtra(Utils.EXTRA_PRICE_VALUE));
+                mFruitsViewModel.insertAll(fruits);
+            }
+            else
+            {
+                showToast(getApplicationContext(),getString(R.string.not_saved));
+            }
         }
         else if(requestCode == REQUEST_SAVE && resultCode == Activity.RESULT_OK)
         {
             Intent intent = new Intent();
-            int result = intent.getIntExtra(Utils.EXTRA_INT_VALUE,0);
+            int result = intent.getIntExtra(Utils.EXTRA_INT_VALUE, 0);
             saveData(result);
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -178,14 +198,14 @@ public class DataListActivity extends BaseActivity
 
     }
 
-    private void showSaveDataDialog(int title, int itemList,  int selectedItem)
+    private void showSaveDataDialog(int title, int itemList, int selectedItem)
     {
         Intent intent = new Intent(DataListActivity.this, RadioGroupDialog.class);
-        String[] items  = getResources().getStringArray(itemList);
-        intent.putExtra(Utils.EXTRA_TITLE,getString(title));
-        intent.putExtra(Utils.EXTRA_STRING_ARRAY_VALUE,items);
-        intent.putExtra(Utils.EXTRA_INT_VALUE,selectedItem);
-        startActivityForResult(intent,REQUEST_SAVE);
+        String[] items = getResources().getStringArray(itemList);
+        intent.putExtra(Utils.EXTRA_TITLE, getString(title));
+        intent.putExtra(Utils.EXTRA_STRING_ARRAY_VALUE, items);
+        intent.putExtra(Utils.EXTRA_INT_VALUE, selectedItem);
+        startActivityForResult(intent, REQUEST_SAVE);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener()
@@ -195,17 +215,30 @@ public class DataListActivity extends BaseActivity
         {
             if(view.getId() == R.id.btn_delete)
             {
-                    for(int i = dataList.size() -1; i >= 0; i--)
-                    {
-                        if(dataList.get(i).isCheck())
-                        {
-                            dataList.remove(i);
-                        }
-                    }
-
+                removeCheckedData();
                 btnDelete.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
+                adapter.setCheckboxVisibility(false);
             }
+        }
+    };
+
+    private void removeCheckedData()
+    {
+        for(int i = dataList.size() -1; i >= 0; i--)
+        {
+            if(dataList.get(i).isCheck())
+                mFruitsViewModel.deleteAll(dataList.get(i));
+        }
+    }
+
+    private Observer<List<Fruits>> mObserver = new Observer<List<Fruits>>()
+    {
+        @Override
+        public void onChanged(List<Fruits> fruits)
+        {
+            Log.d(TAG,"Invoked onChanged within observer");
+            adapter.setList(fruits);
+            adapter.notifyDataSetChanged();
         }
     };
 }

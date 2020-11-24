@@ -29,6 +29,8 @@
     <string name="hint">Hint</string>
     <string name="please_wait">Please wait…</string>
 
+    <string name="not_saved">Failed saving data</string>
+
     <string-array name="save_type_array">
         <item>@string/internal_storage</item>
         <item>@string/external_storage</item>

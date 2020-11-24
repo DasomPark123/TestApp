@@ -14,22 +14,36 @@ import com.example.testapp.R;
 import com.example.testapp.VO.Fruits;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataListViewHolder>
 {
     private ArrayList<Fruits> itemList;
+    private DataListViewHolder viewHolder;
 
     public DataListAdapter(ArrayList<Fruits> itemList)
     {
         this.itemList = itemList;
     }
 
+    public void setList(List<Fruits> list)
+    {
+        itemList.clear();
+        itemList.addAll(list);
+    }
+
+    public void setCheckboxVisibility(boolean isCheck)
+    {
+
+        viewHolder.setCheckBoxVisibility(isCheck);
+    }
+
     @NonNull
     @Override
     public DataListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item,parent,false);
-        DataListViewHolder viewHolder = new DataListViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item, parent, false);
+        viewHolder = new DataListViewHolder(view);
 
         return viewHolder;
     }
@@ -64,6 +78,15 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataLi
             tvPrice = itemView.findViewById(R.id.tv_price);
 
             checkBox.setOnClickListener(onClickListener);
+            checkBox.setVisibility(View.INVISIBLE);
+        }
+
+        public void setCheckBoxVisibility(boolean isCheck)
+        {
+            if(isCheck)
+                checkBox.setVisibility(View.VISIBLE);
+            else
+                checkBox.setVisibility(View.INVISIBLE);
         }
 
         private View.OnClickListener onClickListener = new View.OnClickListener()
@@ -71,23 +94,23 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataLi
             @Override
             public void onClick(View view)
             {
-                Log.d("ViewHolder","onClick");
+                Log.d("ViewHolder", "onClick");
                 int position = getAdapterPosition();
                 if(position != RecyclerView.NO_POSITION)
                 {
                     if(view.getId() == R.id.checkbox)
                     {
-                        Log.d("ViewHolder","itemClickListener position: " + position);
+                        Log.d("ViewHolder", "itemClickListener position: " + position);
                         if(itemList.get(position).isCheck())
                         {
                             itemList.get(position).setCheck(false);
-                            Log.d("ViewHolder",itemList.get(position).isCheck() ?
+                            Log.d("ViewHolder", itemList.get(position).isCheck() ?
                                     "checkbox : true" : "checkbox : false");
                         }
                         else
                         {
                             itemList.get(position).setCheck(true);
-                            Log.d("ViewHolder",itemList.get(position).isCheck() ?
+                            Log.d("ViewHolder", itemList.get(position).isCheck() ?
                                     "checkbox : true" : "checkbox : false");
                         }
                     }

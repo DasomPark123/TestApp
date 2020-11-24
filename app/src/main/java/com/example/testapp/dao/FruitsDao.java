@@ -1,5 +1,6 @@
 package com.example.testapp.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,19 +15,19 @@ import java.util.List;
 @Dao
 public interface FruitsDao
 {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(String name, String price);
+    @Query("SELECT * FROM fruits_table ORDER BY name ASC")
+    LiveData<List<Fruits>> getAllFruitsByAsc();
 
-    @Update
-    void update(Fruits fruits);
+//    @Query("SELECT * FROM fruits_table WHERE price > :avePrice")
+//    List<Fruits> getFruitsOverPrice(String avePrice);
+
+    @Insert(entity = Fruits.class, onConflict = OnConflictStrategy.REPLACE)
+    void insert(Fruits fruits);
+
+    @Update(entity = Fruits.class)
+    void update(Fruits... fruits);
 
     @Delete
-    void delete();
-
-    @Query("SELECT * FROM fruits_table ORDER BY name ASC")
-    List<Fruits> getAllFruitsByAsc();
-
-    @Query("DELETE FROM fruits_table")
-    void deleteAll();
+    void deleteAll(Fruits... fruits);
 
 }
