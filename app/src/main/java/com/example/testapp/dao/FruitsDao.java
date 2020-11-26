@@ -18,16 +18,15 @@ public interface FruitsDao
     @Query("SELECT * FROM fruits_table ORDER BY name ASC")
     LiveData<List<Fruits>> getAllFruitsByAsc();
 
-//    @Query("SELECT * FROM fruits_table WHERE price > :avePrice")
-//    List<Fruits> getFruitsOverPrice(String avePrice);
+    @Query("DELETE FROM fruits_table")
+    void deleteAll();
 
     @Insert(entity = Fruits.class, onConflict = OnConflictStrategy.REPLACE)
     void insert(Fruits fruits);
 
     @Update(entity = Fruits.class)
-    void update(Fruits... fruits);
+    void update(Fruits fruits);
 
     @Delete
-    void deleteAll(Fruits... fruits);
-
+    void delete(Fruits fruits);
 }

@@ -27,10 +27,13 @@ public abstract class FruitsDatabase extends RoomDatabase
     {
         if(INSTANCE == null)
         {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                    FruitsDatabase.class, "fruit_database")
-                    .addCallback(mRoomDatabaseCallback)
-                    .build();
+            synchronized(FruitsDatabase.class)
+            {
+                INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                        FruitsDatabase.class, "fruit_database")
+                        .addCallback(mRoomDatabaseCallback)
+                        .build();
+            }
         }
         return INSTANCE;
     }

@@ -27,7 +27,7 @@ public class FruitsRepository
         return mAllFruits;
     }
 
-    public void insertAll(final Fruits fruits)
+    public void insert(final Fruits fruits)
     {
         FruitsDatabase.databaseWriteExecutor.execute(new Runnable()
         {
@@ -51,14 +51,14 @@ public class FruitsRepository
         });
     }
 
-    public void deleteAll(final Fruits fruits)
+    public void delete(final Fruits fruits)
     {
         FruitsDatabase.databaseWriteExecutor.execute(new Runnable()
         {
             @Override
             public void run()
             {
-                mFruitDao.deleteAll(fruits);
+                mFruitDao.delete(fruits);
             }
         });
     }

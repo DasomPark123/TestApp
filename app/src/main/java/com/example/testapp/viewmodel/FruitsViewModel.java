@@ -31,12 +31,12 @@ public class FruitsViewModel extends AndroidViewModel
 
     public void insertAll(Fruits fruits)
     {
-        mRepository.insertAll(fruits);
+        mRepository.insert(fruits);
     }
 
     public void deleteAll(Fruits fruits)
     {
-        mRepository.deleteAll(fruits);
+        mRepository.delete(fruits);
     }
 
     public void update(Fruits fruits)

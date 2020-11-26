@@ -18,6 +18,7 @@
 
     <string name="data_list">Data List</string>
     <string name="add_data">Add Data</string>
+    <string name="update_data">Update Date</string>
     <string name="save_data">Save Data</string>
 
     <string name="internal_storage">Internal Storage</string>

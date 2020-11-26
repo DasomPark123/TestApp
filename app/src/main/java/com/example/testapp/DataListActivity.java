@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testapp.VO.Fruits;
 import com.example.testapp.adapters.DataListAdapter;
-import com.example.testapp.dialogs.AddDataDialog;
+import com.example.testapp.databinding.ActivityDataListBinding;
+import com.example.testapp.dialogs.InputDataDialog;
 import com.example.testapp.dialogs.RadioGroupDialog;
 import com.example.testapp.utils.PreferenceUtil;
 import com.example.testapp.utils.Utils;
@@ -32,8 +35,9 @@ public class DataListActivity extends BaseActivity
 {
     private final String TAG = getClass().getSimpleName();
 
-    private final int REQUEST_ADD = 0x1001;
-    private final int REQUEST_SAVE = 0x1002;
+    public static final int REQUEST_ADD = 0x1001;
+    public static final int REQUEST_UPDATE = 0x1002;
+    public static final int REQUEST_SAVE = 0x1003;
 
     private final int INTERNAL_STORAGE = 0;
     private final int EXTERNAL_STORAGE = 1;
@@ -62,7 +66,7 @@ public class DataListActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_data_list);
+        ActivityDataListBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_data_list);
 
         initView();
     }
@@ -76,7 +80,7 @@ public class DataListActivity extends BaseActivity
         pref = new PreferenceUtil(getApplicationContext());
 
         recyclerView = findViewById(R.id.rv_data_list);
-        adapter = new DataListAdapter(dataList);
+        adapter = new DataListAdapter(DataListActivity.this,dataList);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -87,6 +91,14 @@ public class DataListActivity extends BaseActivity
         saveItems = getResources().getStringArray(R.array.save_type_array);
 
         mFruitsViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(FruitsViewModel.class);
+        adapter.setOnItemClickListener(new DataListAdapter.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(Fruits fruits, int resId)
+            {
+                if(resId == R.id.)
+            }
+        });
         mFruitsViewModel.getAllFruits().observe(this, mObserver);
 
         //addTestData();
@@ -120,14 +132,15 @@ public class DataListActivity extends BaseActivity
         }
         else if(item.getItemId() == R.id.action_add)
         {
-            Intent intent = new Intent(this, AddDataDialog.class);
-            intent.putExtra(Utils.EXTRA_TITLE, getString(R.string.add_data));
+            Intent intent = new Intent(this, InputDataDialog.class);
+            intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.add_data));
             startActivityForResult(intent, REQUEST_ADD);
         }
         else if(item.getItemId() == R.id.action_delete)
         {
             btnDelete.setVisibility(View.VISIBLE);
             adapter.setCheckboxVisibility(true);
+            adapter.notifyDataSetChanged();
         }
         else if(item.getItemId() == R.id.action_select_all)
         {
@@ -158,6 +171,14 @@ public class DataListActivity extends BaseActivity
             else
             {
                 showToast(getApplicationContext(),getString(R.string.not_saved));
+            }
+        }
+        else if(requestCode == REQUEST_UPDATE)
+        {
+            if(resultCode == Activity.RESULT_OK)
+            {
+                Fruits fruits = new Fruits(data.getStringExtra(Utils.EXTRA_NAME_VALUE),data.getStringExtra(Utils.EXTRA_PRICE_VALUE));
+                mFruitsViewModel.update(fruits);
             }
         }
         else if(requestCode == REQUEST_SAVE && resultCode == Activity.RESULT_OK)
@@ -218,6 +239,7 @@ public class DataListActivity extends BaseActivity
                 removeCheckedData();
                 btnDelete.setVisibility(View.GONE);
                 adapter.setCheckboxVisibility(false);
+                adapter.notifyDataSetChanged();
             }
         }
     };
