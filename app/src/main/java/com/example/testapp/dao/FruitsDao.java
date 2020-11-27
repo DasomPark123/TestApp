@@ -8,8 +8,9 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.testapp.VO.Fruits;
+import com.example.testapp.entity.Fruits;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao

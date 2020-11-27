@@ -1,4 +1,4 @@
-package com.example.testapp.VO;
+package com.example.testapp.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

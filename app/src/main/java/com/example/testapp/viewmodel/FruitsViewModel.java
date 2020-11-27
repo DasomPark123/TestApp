@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.testapp.VO.Fruits;
+import com.example.testapp.entity.Fruits;
 import com.example.testapp.repository.FruitsRepository;
 
 import java.util.List;

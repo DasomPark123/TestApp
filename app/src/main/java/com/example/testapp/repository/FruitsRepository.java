@@ -4,10 +4,11 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.testapp.VO.Fruits;
 import com.example.testapp.dao.FruitsDao;
 import com.example.testapp.database.FruitsDatabase;
+import com.example.testapp.entity.Fruits;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FruitsRepository

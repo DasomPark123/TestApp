@@ -8,7 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.testapp.VO.Fruits;
+import com.example.testapp.entity.Fruits;
 import com.example.testapp.dao.FruitsDao;
 
 import java.util.concurrent.ExecutorService;

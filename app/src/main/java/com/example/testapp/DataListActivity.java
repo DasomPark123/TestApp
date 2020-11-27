@@ -7,21 +7,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.testapp.VO.Fruits;
+import com.example.testapp.entity.Fruits;
 import com.example.testapp.adapters.DataListAdapter;
-import com.example.testapp.databinding.ActivityDataListBinding;
 import com.example.testapp.dialogs.InputDataDialog;
 import com.example.testapp.dialogs.RadioGroupDialog;
 import com.example.testapp.utils.PreferenceUtil;
@@ -66,7 +63,7 @@ public class DataListActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        ActivityDataListBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_data_list);
+        setContentView(R.layout.activity_data_list);
 
         initView();
     }
@@ -80,7 +77,7 @@ public class DataListActivity extends BaseActivity
         pref = new PreferenceUtil(getApplicationContext());
 
         recyclerView = findViewById(R.id.rv_data_list);
-        adapter = new DataListAdapter(DataListActivity.this,dataList);
+        adapter = new DataListAdapter(dataList);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -91,29 +88,8 @@ public class DataListActivity extends BaseActivity
         saveItems = getResources().getStringArray(R.array.save_type_array);
 
         mFruitsViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(FruitsViewModel.class);
-        adapter.setOnItemClickListener(new DataListAdapter.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(Fruits fruits, int resId)
-            {
-                if(resId == R.id.)
-            }
-        });
+        //adapter.setOnItemClickListener(mOnItemClickListener);
         mFruitsViewModel.getAllFruits().observe(this, mObserver);
-
-        //addTestData();
-    }
-
-    private void addTestData()
-    {
-        dataList.add(new Fruits("apple", "1000"));
-        dataList.add(new Fruits("banana", "2000"));
-        dataList.add(new Fruits("strawberry", "3000"));
-        dataList.add(new Fruits("pear", "4000"));
-        dataList.add(new Fruits("grape", "500"));
-        dataList.add(new Fruits("grapefruit", "100"));
-
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -159,10 +135,6 @@ public class DataListActivity extends BaseActivity
     {
         if(requestCode == REQUEST_ADD)
         {
-//            name = data.getStringExtra(Utils.EXTRA_NAME_VALUE);
-//            price = data.getStringExtra(Utils.EXTRA_PRICE_VALUE);
-//            dataList.add(new Fruits(name, price));
-//            adapter.notifyItemChanged(dataList.size() - 1);
             if(resultCode == Activity.RESULT_OK)
             {
                 Fruits fruits = new Fruits(data.getStringExtra(Utils.EXTRA_NAME_VALUE), data.getStringExtra(Utils.EXTRA_PRICE_VALUE));
@@ -170,14 +142,14 @@ public class DataListActivity extends BaseActivity
             }
             else
             {
-                showToast(getApplicationContext(),getString(R.string.not_saved));
+                showToast(getApplicationContext(), getString(R.string.not_saved));
             }
         }
         else if(requestCode == REQUEST_UPDATE)
         {
             if(resultCode == Activity.RESULT_OK)
             {
-                Fruits fruits = new Fruits(data.getStringExtra(Utils.EXTRA_NAME_VALUE),data.getStringExtra(Utils.EXTRA_PRICE_VALUE));
+                Fruits fruits = new Fruits(data.getStringExtra(Utils.EXTRA_NAME_VALUE), data.getStringExtra(Utils.EXTRA_PRICE_VALUE));
                 mFruitsViewModel.update(fruits);
             }
         }
@@ -246,7 +218,7 @@ public class DataListActivity extends BaseActivity
 
     private void removeCheckedData()
     {
-        for(int i = dataList.size() -1; i >= 0; i--)
+        for(int i = dataList.size() - 1; i >= 0; i--)
         {
             if(dataList.get(i).isCheck())
                 mFruitsViewModel.deleteAll(dataList.get(i));
@@ -255,12 +227,35 @@ public class DataListActivity extends BaseActivity
 
     private Observer<List<Fruits>> mObserver = new Observer<List<Fruits>>()
     {
+
         @Override
         public void onChanged(List<Fruits> fruits)
         {
-            Log.d(TAG,"Invoked onChanged within observer");
+            Log.d(TAG, "Invoked onChanged within observer");
+//            dataList.clear();
+//            dataList.addAll(fruits);
             adapter.setList(fruits);
-            adapter.notifyDataSetChanged();
         }
     };
+
+//    private DataListAdapter.OnItemClickListener mOnItemClickListener = new DataListAdapter.OnItemClickListener()
+//    {
+//        @Override
+//        public void onItemClicked(View view, Fruits fruits)
+//        {
+//            switch(view.getId())
+//            {
+//                case R.id.checkbox:
+//                    fruits.setCheck(!fruits.isCheck());
+//                    break;
+//                case R.id.linear_data_item:
+//                    Intent intent = new Intent(DataListActivity.this, InputDataDialog.class);
+//                    intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.update_data));
+//                    intent.putExtra(Utils.EXTRA_NAME_VALUE, fruits.getName());
+//                    intent.putExtra(Utils.EXTRA_PRICE_VALUE, fruits.getPrice());
+//                    startActivityForResult(intent, DataListActivity.REQUEST_UPDATE);
+//                    break;
+//            }
+//        }
+//    };
 }
